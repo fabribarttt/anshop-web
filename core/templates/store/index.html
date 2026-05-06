@@ -1,0 +1,33 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'index.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section d-flex align-items-center">
+    <div class="hero-bg"></div>
+    <div class="hero-gradient"></div>
+    <div class="container hero-content">
+        <div class="row">
+            <div class="col-lg-6">
+                <span class="text-primary fw-medium small text-uppercase tracking-wide">Nueva Coleccion 2026</span>
+                <h1 class="display-3 mt-3 mb-4" style="line-height: 1.1;">Elegancia en cada <span
+                        class="fst-italic">detalle</span></h1>
+                <p class="lead text-muted mb-4" style="max-width: 420px;">Descubre nuestra coleccion de estuches y
+                    accesorios que buscan estilo y sofisticacion.</p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="#catalogo" class="btn btn-primary btn-lg px-4">
+                        Ver Catalogo
+                        <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                    <a href="#contacto" class="btn btn-outline-primary btn-lg px-4">WhatsApp</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
