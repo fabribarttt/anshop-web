@@ -30,4 +30,77 @@
         </div>
     </div>
 </section>
+
+<!-- Catalog Section -->
+<section id="catalogo" class="py-5 bg-white">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3">
+            <div>
+                <h2 class="display-6 mb-2">Nuestros Productos</h2>
+            </div>
+        </div>
+
+        <div class="row g-4" id="products-grid">
+            {% for product in products %}
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="position-relative">
+                        {% if product.is_new %}
+                        <span class="badge-new">Nuevo</span>
+                        {% endif %}
+                        <img src="{{ product.image }}" class="card-img-top product-img" alt="{{ product.name }}">
+                    </div>
+                    <div class="card-body">
+                        <p class="small text-muted mb-1">{{ product.category }}</p>
+                        <h6 class="card-title font-serif mb-2">{{ product.name }}</h6>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fw-semibold text-primary">${{ product.price }}</span>
+                            {% if product.old_price %}
+                            <span class="price-old">${{ product.old_price }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 pt-0">
+                        <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-primary btn-sm w-100">
+                            Ver Detalles
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Productos de ejemplo (se reemplazaran con datos reales) -->
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="position-relative">
+                        <span class="badge-new">Nuevo</span>
+                        <img src="{% static 'images/products/case-floral.jpg' %}" class="card-img-top product-img"
+                            alt="Estuche Floral">
+                    </div>
+                    <div class="card-body">
+                        <p class="small text-muted mb-1">Estuches</p>
+                        <h6 class="card-title font-serif mb-2">Estuche Floral Rose</h6>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fw-semibold text-primary">$29.990</span>
+                            <span class="price-old">$39.990</span>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 pt-0">
+                        <a href="#" class="btn btn-outline-primary btn-sm w-100">Ver Detalles</a>
+                    </div>
+                </div>
+            </div>
+
+            {% endfor %}
+        </div>
+
+        <!-- Load More -->
+        <div class="text-center mt-5">
+            <button class="btn btn-outline-primary px-5">
+                Cargar mas productos
+                <i class="bi bi-arrow-down ms-2"></i>
+            </button>
+        </div>
+    </div>
+</section>
+
 {% endblock %}
