@@ -41,42 +41,33 @@
         </div>
 
         <div class="row g-4" id="products-grid">
-            {% for product in products %}
+
+            {% for product in productos %}
             <div class="col-6 col-md-4 col-lg-3">
                 <div class="card h-100 border-0 shadow-sm">
                     <div class="position-relative">
-                        <img src="{{ product.image }}" class="card-img-top product-img" alt="{{ product.name }}">
+                        {% if product.imagenes.all %}
+                        {% with imagen=product.imagenes.all|first %}
+                        <img src="{{ imagen.imagen.url }}" class="card-img-top product-img" alt="{{ product.nombre }}">
+                        {% endwith %}
+
+                        {% endif %}
                     </div>
                     <div class="card-body">
-                        <h6 class="card-title font-serif mb-2">{{ product.name }}</h6>
+                        <h5 class="card-title font-serif mb-2">{{ product.nombre }}</h5>
+                        <p class="card-text small text-muted mb-2">{{ product.descripcion|truncatewords:15 }}</p>
                         <div class="d-flex align-items-center gap-2">
-                            <span class="fw-semibold text-primary">${{ product.price }}</span>
+                            {% load humanize %}
+                            <span class="fw-semibold text-primary">{{ product.precio|intcomma }} Gs</span>
                         </div>
+                        <!--{% if product.categoria %}
+                        <span class="badge bg-light text-dark mt-2">{{ product.categoria.nombre }}</span>
+                        {% endif %}-->
                     </div>
                     <div class="card-footer bg-transparent border-0 pt-0">
-                        <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-primary btn-sm w-100">
+                        <a href="{% url 'producto_detalle' product.id %}" class="btn btn-outline-primary btn-sm w-100">
                             Ver Detalles
                         </a>
-                    </div>
-                </div>
-            </div>
-
-            {% empty %}
-            <!-- Productos de ejemplo (se reemplazaran con datos reales) -->
-            <div class="col-6 col-md-4 col-lg-3">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="position-relative">
-                        <img src="{% static 'images/ejemplos/case-floral.jpg' %}" class="card-img-top product-img"
-                            alt="Estuche Floral">
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title font-serif mb-2">Estuche Floral Rose</h5>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="fw-semibold text-primary">30.000</span>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-transparent border-0 pt-0">
-                        <a href="#" class="btn btn-outline-primary btn-sm w-100">Ver Detalles</a>
                     </div>
                 </div>
             </div>

@@ -1,0 +1,280 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'index.css' %}">
+<style>
+    .carousel-container {
+        max-width: 600px;
+        margin: 0 auto 2rem;
+    }
+
+    .carousel-inner {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .carousel-item img {
+        height: 500px;
+        object-fit: cover;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        display: none;
+    }
+
+    .thumbnail-gallery {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .thumbnail-item {
+        width: 80px;
+        height: 80px;
+        border: 3px solid transparent;
+        border-radius: 8px;
+        cursor: pointer;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        background-color: #f0f0f0;
+    }
+
+    .thumbnail-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .thumbnail-item.active {
+        border-color: #0066cc;
+        box-shadow: 0 0 10px rgba(0, 102, 204, 0.5);
+    }
+
+    .thumbnail-item:hover {
+        transform: scale(1.05);
+        border-color: #0066cc;
+    }
+
+    .producto-detalle-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
+        .carousel-item img {
+            height: 350px;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 40px;
+        }
+
+        .carousel-control-prev {
+            left: -10px;
+        }
+
+        .carousel-control-next {
+            right: -10px;
+        }
+
+        .thumbnail-item {
+            width: 60px;
+            height: 60px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="py-3 border-bottom">
+    <div class="container">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Catálogo</a></li>
+            <li class="breadcrumb-item active">{{ producto.nombre }}</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Producto Detalle -->
+<section class="py-5">
+    <div class="container">
+        <div class="producto-detalle-container">
+            <div class="row justify-content-center">
+                <!-- Galería de imágenes con Carrusel -->
+                <div class="col-lg-6 pe-lg-4">
+                    {% if producto.imagenes.all %}
+                    <div class="carousel-container">
+                        <div id="productCarousel" class="carousel slide">
+                            <div class="carousel-inner">
+                                {% for imagen in producto.imagenes.all %}
+                                <div class="carousel-item {% if forloop.first %}active{% endif %}"
+                                    data-image-id="{{ forloop.counter0 }}">
+                                    <img src="{{ imagen.imagen.url }}" class="d-block w-100"
+                                        alt="{{ producto.nombre }}">
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            {% if producto.imagenes.all|length > 1 %}
+                            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel"
+                                data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Anterior</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel"
+                                data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Siguiente</span>
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Miniaturas -->
+                    {% if producto.imagenes.all|length > 1 %}
+                    <div class="thumbnail-gallery">
+                        {% for imagen in producto.imagenes.all %}
+                        <div class="thumbnail-item {% if forloop.first %}active{% endif %}"
+                            onclick="showCarouselImage({{ forloop.counter0 }}); updateThumbnail(this)"
+                            title="Click para ver imagen">
+                            <img src="{{ imagen.imagen.url }}" alt="Miniatura {{ forloop.counter }}">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    <div class="carousel-container">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="{% static 'images/ejemplos/case-floral.jpg' %}" class="d-block w-100"
+                                    alt="{{ producto.nombre }}">
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Información del producto -->
+                <div class="col-lg-6 ps-lg-4">
+                    <!-- Categoría -->
+                    {% if producto.categoria %}
+                    <span class="badge bg-primary mb-3">{{ producto.categoria.nombre }}</span>
+                    {% endif %}
+
+                    <!-- Nombre -->
+                    <h1 class="display-5 mb-3">{{ producto.nombre }}</h1>
+
+                    <!-- Precio -->
+                    <div class="mb-4">
+                        <p class="fs-3 fw-bold text-primary">${{ producto.precio }}</p>
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="mb-4">
+                        <h5>Descripción</h5>
+                        <p class="text-muted">{{ producto.descripcion|linebreaks }}</p>
+                    </div>
+
+                    <!-- Modelos disponibles -->
+                    {% if producto.modelos_disponibles %}
+                    <div class="mb-4">
+                        <h5>Modelos Disponibles</h5>
+                        <p class="text-muted">{{ producto.modelos_disponibles|linebreaks }}</p>
+                    </div>
+                    {% endif %}
+
+                    <!-- Acciones -->
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="https://wa.me/?text=Estoy%20interesado%20en%20{{ producto.nombre }}" target="_blank"
+                            class="btn btn-primary btn-lg px-4">
+                            <i class="bi bi-whatsapp me-2"></i>
+                            Contactar por WhatsApp
+                        </a>
+                        <a href="{% url 'home' %}" class="btn btn-outline-primary btn-lg px-4">
+                            <i class="bi bi-arrow-left me-2"></i>
+                            Volver al Catálogo
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Productos relacionados -->
+            {% if productos_relacionados %}
+            <hr class="my-5">
+            <div class="mt-5">
+                <h3 class="mb-4 text-center">Otros productos de esta categoría</h3>
+                <div class="row g-4">
+                    {% for producto_rel in productos_relacionados %}
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="position-relative">
+                                {% if producto_rel.imagenes.all %}
+                                {% with imagen=producto_rel.imagenes.all|first %}
+                                <img src="{{ imagen.imagen.url }}" class="card-img-top product-img"
+                                    alt="{{ producto_rel.nombre }}">
+                                {% endwith %}
+                                {% else %}
+                                <img src="{% static 'images/ejemplos/case-floral.jpg' %}"
+                                    class="card-img-top product-img" alt="{{ producto_rel.nombre }}">
+                                {% endif %}
+                            </div>
+                            <div class="card-body">
+                                <h6 class="card-title font-serif mb-2">{{ producto_rel.nombre }}</h6>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="fw-semibold text-primary">${{ producto_rel.precio }}</span>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent border-0 pt-0">
+                                <a href="{% url 'producto_detalle' producto_rel.id %}"
+                                    class="btn btn-outline-primary btn-sm w-100">
+                                    Ver Detalles
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<script>
+    function updateThumbnail(element) {
+        const thumbnails = document.querySelectorAll('.thumbnail-item');
+        thumbnails.forEach(thumb => thumb.classList.remove('active'));
+        element.classList.add('active');
+    }
+
+    function showCarouselImage(index) {
+        const items = document.querySelectorAll('.carousel-item');
+        items.forEach((item, i) => {
+            if (i === index) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    }
+
+    // Inicializar el carrusel de Bootstrap sin auto-slide
+    const carouselElement = document.getElementById('productCarousel');
+    if (carouselElement) {
+        new bootstrap.Carousel(carouselElement, {
+            interval: false,
+            pause: false
+        });
+    }
+</script>
+
+{% endblock %}
