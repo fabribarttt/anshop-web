@@ -25,3 +25,7 @@
         position: relative;
         z-index: 10;
     }
+
+    #catalogo {
+        scroll-margin-top: 60px;
+    }

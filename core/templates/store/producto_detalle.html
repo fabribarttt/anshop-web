@@ -93,17 +93,6 @@
 {% endblock %}
 
 {% block content %}
-<!-- Breadcrumb -->
-<nav aria-label="breadcrumb" class="py-3 border-bottom">
-    <div class="container">
-        <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'home' %}">Catálogo</a></li>
-            <li class="breadcrumb-item active">{{ producto.nombre }}</li>
-        </ol>
-    </div>
-</nav>
-
 <!-- Producto Detalle -->
 <section class="py-5">
     <div class="container">
@@ -174,8 +163,9 @@
                     <h1 class="display-5 mb-3">{{ producto.nombre }}</h1>
 
                     <!-- Precio -->
+                    {% load humanize %}
                     <div class="mb-4">
-                        <p class="fs-3 fw-bold text-primary">${{ producto.precio }}</p>
+                        <p class="fs-3 fw-bold text-primary">{{ producto.precio|intcomma }} Gs</p>
                     </div>
 
                     <!-- Descripción -->
@@ -194,57 +184,18 @@
 
                     <!-- Acciones -->
                     <div class="d-flex gap-2 flex-wrap">
-                        <a href="https://wa.me/?text=Estoy%20interesado%20en%20{{ producto.nombre }}" target="_blank"
-                            class="btn btn-primary btn-lg px-4">
+                        <a href="https://wa.me/595984402992/?text=Estoy%20interesado%20en%20{{ producto.nombre }}"
+                            target="_blank" class="btn btn-primary btn-lg px-4">
                             <i class="bi bi-whatsapp me-2"></i>
                             Contactar por WhatsApp
                         </a>
-                        <a href="{% url 'home' %}" class="btn btn-outline-primary btn-lg px-4">
+                        <a href="{% url 'home' %}#catalogo" class="btn btn-outline-primary btn-lg px-4">
                             <i class="bi bi-arrow-left me-2"></i>
                             Volver al Catálogo
                         </a>
                     </div>
                 </div>
             </div>
-
-            <!-- Productos relacionados -->
-            {% if productos_relacionados %}
-            <hr class="my-5">
-            <div class="mt-5">
-                <h3 class="mb-4 text-center">Otros productos de esta categoría</h3>
-                <div class="row g-4">
-                    {% for producto_rel in productos_relacionados %}
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <div class="card h-100 border-0 shadow-sm">
-                            <div class="position-relative">
-                                {% if producto_rel.imagenes.all %}
-                                {% with imagen=producto_rel.imagenes.all|first %}
-                                <img src="{{ imagen.imagen.url }}" class="card-img-top product-img"
-                                    alt="{{ producto_rel.nombre }}">
-                                {% endwith %}
-                                {% else %}
-                                <img src="{% static 'images/ejemplos/case-floral.jpg' %}"
-                                    class="card-img-top product-img" alt="{{ producto_rel.nombre }}">
-                                {% endif %}
-                            </div>
-                            <div class="card-body">
-                                <h6 class="card-title font-serif mb-2">{{ producto_rel.nombre }}</h6>
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="fw-semibold text-primary">${{ producto_rel.precio }}</span>
-                                </div>
-                            </div>
-                            <div class="card-footer bg-transparent border-0 pt-0">
-                                <a href="{% url 'producto_detalle' producto_rel.id %}"
-                                    class="btn btn-outline-primary btn-sm w-100">
-                                    Ver Detalles
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
         </div>
     </div>
 </section>

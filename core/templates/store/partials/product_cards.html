@@ -1,0 +1,44 @@
+{% load humanize %}
+
+{% for product in page_obj.object_list %}
+<div class="col-6 col-md-4 col-lg-3">
+    <div class="card h-100 border-0 shadow-sm">
+        <div class="position-relative">
+            {% if product.imagenes.all %}
+            {% with imagen=product.imagenes.all|first %}
+            <img src="{{ imagen.imagen.url }}" class="card-img-top product-img" alt="{{ product.nombre }}">
+            {% endwith %}
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <h5 class="card-title font-serif mb-2">{{ product.nombre }}</h5>
+            <p class="card-text small text-muted mb-2">{{ product.descripcion|truncatewords:15 }}</p>
+            <div class="d-flex align-items-center gap-2">
+                <span class="fw-semibold text-primary">{{ product.precio|intcomma }} Gs</span>
+            </div>
+        </div>
+        <div class="card-footer bg-transparent border-0 pt-0">
+            <a href="{% url 'producto_detalle' product.id %}" class="btn btn-outline-primary btn-sm w-100">
+                Ver Detalles
+            </a>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!-- Script para actualizar el botón si hay más páginas -->
+<script>
+    const loadMoreBtn = document.getElementById('load-more-btn');
+
+    {% if page_obj.has_next %}
+    if (loadMoreBtn) {
+        loadMoreBtn.setAttribute('hx-get', "{% url 'home' %}?page={{ page_obj.next_page_number }}");
+        loadMoreBtn.disabled = false;
+    }
+    {% else %}
+    if (loadMoreBtn) {
+        loadMoreBtn.disabled = true;
+        loadMoreBtn.textContent = 'No hay más productos';
+    }
+    {% endif %}
+</script>

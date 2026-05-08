@@ -17,14 +17,15 @@
                 <span class="text-primary fw-medium small text-uppercase tracking-wide">Nueva Coleccion 2026</span>
                 <h1 class="display-3 mt-3 mb-4" style="line-height: 1.1;">Elegancia en cada <span
                         class="fst-italic">detalle</span></h1>
-                <p class="lead text-muted mb-4" style="max-width: 420px;">Descubre nuestra coleccion de estuches y
-                    accesorios que buscan estilo y sofisticacion.</p>
+                <p class="lead text-muted mb-4" style="max-width: 420px;">Descubre nuestra colección de estuches y
+                    accesorios una selección premium para quienes buscan distinción.</p>
                 <div class="d-flex gap-3 flex-wrap">
                     <a href="#catalogo" class="btn btn-primary btn-lg px-4">
-                        Ver Catalogo
+                        Ver Productos
                         <i class="bi bi-arrow-right ms-2"></i>
                     </a>
-                    <a href="#contacto" class="btn btn-outline-primary btn-lg px-4">WhatsApp</a>
+                    <a href="https://wa.me/595984402992" target="_blank"
+                        class="btn btn-outline-primary btn-lg px-4">WhatsApp</a>
                 </div>
             </div>
         </div>
@@ -40,48 +41,26 @@
             </div>
         </div>
 
-        <div class="row g-4" id="products-grid">
-
-            {% for product in productos %}
-            <div class="col-6 col-md-4 col-lg-3">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="position-relative">
-                        {% if product.imagenes.all %}
-                        {% with imagen=product.imagenes.all|first %}
-                        <img src="{{ imagen.imagen.url }}" class="card-img-top product-img" alt="{{ product.nombre }}">
-                        {% endwith %}
-
-                        {% endif %}
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title font-serif mb-2">{{ product.nombre }}</h5>
-                        <p class="card-text small text-muted mb-2">{{ product.descripcion|truncatewords:15 }}</p>
-                        <div class="d-flex align-items-center gap-2">
-                            {% load humanize %}
-                            <span class="fw-semibold text-primary">{{ product.precio|intcomma }} Gs</span>
-                        </div>
-                        <!--{% if product.categoria %}
-                        <span class="badge bg-light text-dark mt-2">{{ product.categoria.nombre }}</span>
-                        {% endif %}-->
-                    </div>
-                    <div class="card-footer bg-transparent border-0 pt-0">
-                        <a href="{% url 'producto_detalle' product.id %}" class="btn btn-outline-primary btn-sm w-100">
-                            Ver Detalles
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            {% endfor %}
+        <div class="row g-4" id="products-container">
+            {% include "store/partials/product_cards.html" with page_obj=page_obj %}
         </div>
 
-        <!-- Load More -->
+        <!-- Load More Button -->
+        {% if page_obj.has_next %}
         <div class="text-center mt-5">
-            <button class="btn btn-outline-primary px-5">
+            <button id="load-more-btn" class="btn btn-outline-primary px-5"
+                hx-get="{% url 'home' %}?page={{ page_obj.next_page_number }}" hx-target="#products-container"
+                hx-swap="beforeend" hx-indicator="#loading-spinner">
                 Cargar mas productos
                 <i class="bi bi-arrow-down ms-2"></i>
             </button>
+            <div id="loading-spinner" class="htmx-request:inline-block hidden mt-3">
+                <div class="spinner-border spinner-border-sm text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+            </div>
         </div>
+        {% endif %}
     </div>
 </section>
 

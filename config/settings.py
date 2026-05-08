@@ -152,3 +152,5 @@ AWS_S3_ENDPOINT_URL = env("SUPABASE_S3_ENDPOINT_URL")
 
 # Bucket público: URLs limpias sin firma
 AWS_QUERYSTRING_AUTH = False
+
+PAGE_SIZE = 10
