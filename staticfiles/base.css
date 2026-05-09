@@ -1,0 +1,114 @@
+        :root {
+            --color-primary: #c4a07a;
+            --color-primary-dark: #a8876a;
+            --color-background: #faf8f6;
+            --color-foreground: #3d3530;
+            --color-muted: #8a7f78;
+            --color-border: #e8e2dc;
+            --color-card: #ffffff;
+            --font-serif: 'Cormorant Garamond', Georgia, serif;
+            --font-sans: 'Inter', system-ui, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--color-background);
+            color: var(--color-foreground);
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: var(--font-serif);
+            font-weight: 500;
+        }
+
+        .font-serif {
+            font-family: var(--font-serif);
+        }
+
+        .btn-primary {
+            background-color: var(--color-primary);
+            border-color: var(--color-primary);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-primary-dark);
+            border-color: var(--color-primary-dark);
+        }
+
+        .btn-outline-primary {
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--color-primary);
+            border-color: var(--color-primary);
+            color: #fff;
+        }
+
+        .text-primary {
+            color: var(--color-primary) !important;
+        }
+
+        .bg-primary {
+            background-color: var(--color-primary) !important;
+        }
+
+        .text-muted {
+            color: var(--color-muted) !important;
+        }
+
+        .navbar {
+            background-color: var(--color-background);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .navbar-brand {
+            font-family: var(--font-serif);
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--color-foreground);
+        }
+
+        .nav-link {
+            color: var(--color-foreground);
+            font-weight: 400;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--color-primary);
+        }
+
+        .card {
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .footer {
+            background-color: var(--color-foreground);
+            color: #fff;
+        }
+
+        .footer a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer a:hover {
+            color: #fff;
+        }

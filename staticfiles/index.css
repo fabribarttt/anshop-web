@@ -1,0 +1,31 @@
+.hero-section {
+        min-height: 85vh;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-bg {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 60%;
+        height: 100%;
+        background-image: url("/static/images/hero.jpg");
+        background-size: cover;
+        background-position: top;
+    }
+    
+    .hero-gradient {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to right, var(--color-background) 0%, var(--color-background) 35%, rgba(250,248,246,0.95) 50%, transparent 70%);
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 10;
+    }
+
+    #catalogo {
+        scroll-margin-top: 60px;
+    }
