@@ -1,48 +1,47 @@
 {% extends 'base/base.html' %}
 
 {% load static %}
+{% load humanize %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'index.css' %}">
+<!-- Aseguramos que los íconos de Bootstrap estén disponibles -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
     .carousel-container {
-        max-width: 600px;
-        margin: 0 auto 2rem;
+        max-width: 100%;
+        margin-bottom: 1.5rem;
     }
 
     .carousel-inner {
-        border-radius: 12px;
+        border-radius: 16px;
         overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        background-color: #f8f9fa;
     }
 
     .carousel-item img {
-        height: 500px;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1/1;
         object-fit: cover;
-    }
-
-    .carousel-control-prev,
-    .carousel-control-next {
-        display: none;
     }
 
     .thumbnail-gallery {
         display: flex;
-        gap: 10px;
-        justify-content: center;
-        margin-top: 2rem;
+        gap: 12px;
+        justify-content: start;
         flex-wrap: wrap;
     }
 
     .thumbnail-item {
-        width: 80px;
-        height: 80px;
-        border: 3px solid transparent;
-        border-radius: 8px;
+        width: 70px;
+        height: 70px;
+        border: 2px solid transparent;
+        border-radius: 10px;
         cursor: pointer;
         overflow: hidden;
-        transition: all 0.3s ease;
-        background-color: #f0f0f0;
+        transition: all 0.2s ease;
+        background-color: #f8f9fa;
     }
 
     .thumbnail-item img {
@@ -52,38 +51,33 @@
     }
 
     .thumbnail-item.active {
-        border-color: #0066cc;
-        box-shadow: 0 0 10px rgba(0, 102, 204, 0.5);
+        border-color: #0d6efd;
     }
 
     .thumbnail-item:hover {
-        transform: scale(1.05);
-        border-color: #0066cc;
+        border-color: #0d6efd;
+        transform: translateY(-2px);
     }
 
-    .producto-detalle-container {
-        max-width: 1000px;
-        margin: 0 auto;
+    .brand-group-box {
+        background-color: #f8f9fa;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .btn-whatsapp {
+        background-color: #25D366;
+        color: white;
+        border: none;
+    }
+
+    .btn-whatsapp:hover {
+        background-color: #20ba5a;
+        color: white;
     }
 
     @media (max-width: 768px) {
-        .carousel-item img {
-            height: 350px;
-        }
-
-        .carousel-control-prev,
-        .carousel-control-next {
-            width: 40px;
-        }
-
-        .carousel-control-prev {
-            left: -10px;
-        }
-
-        .carousel-control-next {
-            right: -10px;
-        }
-
         .thumbnail-item {
             width: 60px;
             height: 60px;
@@ -93,110 +87,158 @@
 {% endblock %}
 
 {% block content %}
-<!-- Producto Detalle -->
-<section class="py-5">
+<section class="py-4 py-md-5">
     <div class="container">
-        <div class="producto-detalle-container">
-            <div class="row justify-content-center">
-                <!-- Galería de imágenes con Carrusel -->
-                <div class="col-lg-6 pe-lg-4">
-                    {% if producto.imagenes.all %}
-                    <div class="carousel-container">
-                        <div id="productCarousel" class="carousel slide">
-                            <div class="carousel-inner">
-                                {% for imagen in producto.imagenes.all %}
-                                <div class="carousel-item {% if forloop.first %}active{% endif %}"
-                                    data-image-id="{{ forloop.counter0 }}">
-                                    <img src="{{ imagen.imagen.url }}" class="d-block w-100"
-                                        alt="{{ producto.nombre }}">
-                                </div>
-                                {% endfor %}
-                            </div>
 
-                            {% if producto.imagenes.all|length > 1 %}
-                            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel"
-                                data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Anterior</span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel"
-                                data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Siguiente</span>
-                            </button>
-                            {% endif %}
-                        </div>
-                    </div>
+        <!-- Migas de Pan (Breadcrumbs) Minimalistas -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb mb-0" style="font-size: 0.85rem;">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}"
+                        class="text-decoration-none text-muted">Inicio</a></li>
+                {% if producto.categoria %}
+                <li class="breadcrumb-item"><a href="{% url 'home' %}?categoria={{ producto.categoria.slug }}"
+                        class="text-decoration-none text-muted">{{ producto.categoria.nombre }}</a></li>
+                {% endif %}
+                {% if producto.subcategoria %}
+                <li class="breadcrumb-item text-muted active" aria-current="page">{{ producto.subcategoria.nombre }}
+                </li>
+                {% endif %}
+            </ol>
+        </nav>
 
-                    <!-- Miniaturas -->
-                    {% if producto.imagenes.all|length > 1 %}
-                    <div class="thumbnail-gallery">
-                        {% for imagen in producto.imagenes.all %}
-                        <div class="thumbnail-item {% if forloop.first %}active{% endif %}"
-                            onclick="showCarouselImage({{ forloop.counter0 }}); updateThumbnail(this)"
-                            title="Click para ver imagen">
-                            <img src="{{ imagen.imagen.url }}" alt="Miniatura {{ forloop.counter }}">
-                        </div>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                    {% else %}
-                    <div class="carousel-container">
+        <div class="row g-4 justify-content-center">
+            <!-- Columna Izquierda: Galería de Imágenes -->
+            <div class="col-12 col-md-10 col-lg-6">
+                {% if producto.imagenes.all %}
+                <div class="carousel-container">
+                    <div id="productCarousel" class="carousel slide">
                         <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img src="{% static 'images/ejemplos/case-floral.jpg' %}" class="d-block w-100"
-                                    alt="{{ producto.nombre }}">
+                            {% for imagen in producto.imagenes.all %}
+                            <div class="carousel-item {% if forloop.first %}active{% endif %}"
+                                data-image-id="{{ forloop.counter0 }}">
+                                <img src="{{ imagen.imagen.url }}" class="d-block w-100" alt="{{ producto.nombre }}">
                             </div>
+                            {% endfor %}
+                        </div>
+
+                        {% if producto.imagenes.all|length > 1 %}
+                        <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Anterior</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#productCarousel"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Siguiente</span>
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Miniaturas de navegación rápida -->
+                {% if producto.imagenes.all|length > 1 %}
+                <div class="thumbnail-gallery mb-4">
+                    {% for imagen in producto.imagenes.all %}
+                    <div class="thumbnail-item {% if forloop.first %}active{% endif %}"
+                        onclick="showCarouselImage({{ forloop.counter0 }}); updateThumbnail(this)" title="Ver imagen">
+                        <img src="{{ imagen.imagen.url }}" alt="Miniatura {{ forloop.counter }}">
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% else %}
+                <!-- Fallback si el producto no tiene fotos -->
+                <div class="carousel-container">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="{% static 'images/ejemplos/case-floral.jpg' %}" class="d-block w-100"
+                                alt="{{ producto.nombre }}">
                         </div>
                     </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Columna Derecha: Información Estructurada -->
+            <div class="col-12 col-lg-6 ps-lg-4">
+                <div class="d-flex gap-2 align-items-center mb-2">
+                    {% if producto.categoria %}
+                    <span class="badge bg-light text-primary border border-primary-subtle px-2.5 py-1.5 fw-medium"
+                        style="font-size: 0.8rem;">
+                        {{ producto.categoria.nombre }}
+                    </span>
+                    {% endif %}
+                    {% if producto.subcategoria %}
+                    <span class="badge bg-light text-secondary border border-secondary-subtle px-2.5 py-1.5 fw-medium"
+                        style="font-size: 0.8rem;">
+                        {{ producto.subcategoria.nombre }}
+                    </span>
                     {% endif %}
                 </div>
 
-                <!-- Información del producto -->
-                <div class="col-lg-6 ps-lg-4">
-                    <!-- Categoría -->
-                    {% if producto.categoria %}
-                    <span class="badge bg-primary mb-3">{{ producto.categoria.nombre }}</span>
-                    {% endif %}
+                <!-- Nombre -->
+                <h1 class="h2 fw-bold text-dark mb-2" style="letter-spacing: -0.5px;">{{ producto.nombre }}</h1>
 
-                    <!-- Nombre -->
-                    <h1 class="display-5 mb-3">{{ producto.nombre }}</h1>
+                <!-- Precio -->
+                <div class="mb-4">
+                    <span class="fs-2 fw-bold text-primary">{{ producto.precio|intcomma }} Gs</span>
+                </div>
 
-                    <!-- Precio -->
-                    {% load humanize %}
-                    <div class="mb-4">
-                        <p class="fs-3 fw-bold text-primary">{{ producto.precio|intcomma }} Gs</p>
+                <!-- Descripción -->
+                <div class="mb-4">
+                    <h5 class="h6 fw-bold text-dark text-uppercase mb-2"
+                        style="font-size: 0.8rem; letter-spacing: 0.5px;">Descripción</h5>
+                    <div class="text-muted" style="font-size: 0.95rem; line-height: 1.6;">
+                        {{ producto.descripcion|linebreaks }}
                     </div>
+                </div>
 
-                    <!-- Descripción -->
-                    <div class="mb-4">
-                        <h5>Descripción</h5>
-                        <p class="text-muted">{{ producto.descripcion|linebreaks }}</p>
-                    </div>
+                <!-- Modelos Relacionados Dinámicos (Estructura Nueva) -->
+                {% if producto.modelos_dispositivo.all %}
+                <div class="mb-4">
+                    <h5 class="h6 fw-bold text-dark text-uppercase mb-3"
+                        style="font-size: 0.8rem; letter-spacing: 0.5px;">Modelos Compatibles</h5>
 
-                    <!-- Modelos disponibles -->
-                    {% if producto.modelos_disponibles %}
-                    <div class="mb-4">
-                        <h5>Modelos Disponibles</h5>
-                        <p class="text-muted">{{ producto.modelos_disponibles|linebreaks }}</p>
-                    </div>
-                    {% endif %}
+                    {% regroup producto.modelos_dispositivo.all by marca as marca_list %}
 
-                    <!-- Acciones -->
-                    <div class="d-flex gap-2 flex-wrap">
-                        <a href="https://wa.me/595984402992/?text=Estoy%20interesado%20en%20{{ producto.nombre }}"
-                            target="_blank" class="btn btn-primary btn-lg px-4">
-                            <i class="bi bi-whatsapp me-2"></i>
-                            Contactar por WhatsApp
-                        </a>
-                        <a href="{% url 'home' %}#catalogo" class="btn btn-outline-primary btn-lg px-4">
-                            <i class="bi bi-arrow-left me-2"></i>
-                            Volver al Catálogo
-                        </a>
+                    {% for group in marca_list %}
+                    <div class="brand-group-box">
+                        <span class="d-block text-dark fw-semibold mb-2" style="font-size: 0.85rem;">
+                            <i class="bi bi-phone-vibrate text-primary me-1"></i> {{ group.grouper.nombre }}
+                        </span>
+                        <div class="d-flex flex-wrap gap-1.5">
+                            {% for modelo in group.list %}
+                            <span class="badge bg-white text-secondary border fw-normal px-2.5 py-1.5 mb-1"
+                                style="font-size: 0.8rem; border-radius: 6px;">
+                                {{ modelo.nombre }}
+                            </span>
+                            {% endfor %}
+                        </div>
                     </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Acciones Principales -->
+                <div class="d-flex flex-column gap-2 mt-4">
+                    <a href="https://wa.me/595984402992/?text=Hola! Vengo de la web y estoy interesado en el producto: {{ producto.nombre }} (%23{{ producto.id }})"
+                        target="_blank"
+                        class="btn btn-whatsapp btn-lg w-100 py-2.5 fw-medium d-flex align-items-center justify-content-center gap-2"
+                        style="border-radius: 10px; font-size: 1rem;">
+                        <i class="bi bi-whatsapp fs-5"></i>
+                        Pedir por WhatsApp
+                    </a>
+
+                    <a href="{% url 'home' %}" class="btn btn-light btn-md w-100 py-2 text-secondary border-0"
+                        style="border-radius: 10px; font-size: 0.9rem;">
+                        <i class="bi bi-arrow-left me-1"></i> Volver a la tienda
+                    </a>
                 </div>
             </div>
         </div>
+
     </div>
 </section>
 
@@ -208,24 +250,30 @@
     }
 
     function showCarouselImage(index) {
-        const items = document.querySelectorAll('.carousel-item');
-        items.forEach((item, i) => {
-            if (i === index) {
-                item.classList.add('active');
-            } else {
-                item.classList.remove('active');
-            }
-        });
+        const carouselElement = document.getElementById('productCarousel');
+        const carousel = bootstrap.Carousel.getInstance(carouselElement) || new bootstrap.Carousel(carouselElement);
+        carousel.to(index);
     }
 
-    // Inicializar el carrusel de Bootstrap sin auto-slide
-    const carouselElement = document.getElementById('productCarousel');
-    if (carouselElement) {
-        new bootstrap.Carousel(carouselElement, {
-            interval: false,
-            pause: false
-        });
-    }
+    // Inicialización correcta sincronizada con controles internos
+    document.addEventListener('DOMContentLoaded', function () {
+        const carouselElement = document.getElementById('productCarousel');
+        if (carouselElement) {
+            const bsCarousel = new bootstrap.Carousel(carouselElement, {
+                interval: false,
+                wrap: true
+            });
+
+            // Sincronizar cambios de flechas físicas con las miniaturas activas
+            carouselElement.addEventListener('slide.bs.carousel', function (event) {
+                const index = event.to;
+                const thumbnails = document.querySelectorAll('.thumbnail-item');
+                if (thumbnails.length > index) {
+                    thumbnails.forEach(thumb => thumb.classList.remove('active'));
+                    thumbnails[index].classList.add('active');
+                }
+            });
+        }
+    });
 </script>
-
 {% endblock %}

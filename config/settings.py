@@ -60,7 +60,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",  # Agregar el context processor personalizado
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -75,6 +75,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "core.context_processors.categorias_all",  # Agregar el context processor personalizado
             ],
         },
     },
@@ -159,3 +160,7 @@ AWS_S3_CUSTOM_DOMAIN = env("SUPABASE_PUBLIC_URL_BASE")
 AWS_QUERYSTRING_AUTH = False
 
 PAGE_SIZE = 10
+
+LANGUAGE_CODE = "es-py"
+USE_L10N = True
+USE_THOUSAND_SEPARATOR = True

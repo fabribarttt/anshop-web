@@ -7,60 +7,24 @@
 {% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="hero-section d-flex align-items-center">
-    <div class="hero-bg"></div>
-    <div class="hero-gradient"></div>
-    <div class="container hero-content">
-        <div class="row">
-            <div class="col-lg-6">
-                <span class="text-primary fw-medium small text-uppercase tracking-wide">Nueva Coleccion 2026</span>
-                <h1 class="display-3 mt-3 mb-4" style="line-height: 1.1;">Elegancia en cada <span
-                        class="fst-italic">detalle</span></h1>
-                <p class="lead text-muted mb-4" style="max-width: 420px;">Descubre nuestra colección de estuches y
-                    accesorios una selección premium para quienes buscan distinción.</p>
-                <div class="d-flex gap-3 flex-wrap">
-                    <a href="#catalogo" class="btn btn-primary btn-lg px-4">
-                        Ver Productos
-                        <i class="bi bi-arrow-right ms-2"></i>
-                    </a>
-                    <a href="https://wa.me/595984402992" target="_blank"
-                        class="btn btn-outline-primary btn-lg px-4">WhatsApp</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <!-- Catalog Section -->
 <section id="catalogo" class="py-5 bg-white">
     <div class="container">
+
         <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3">
             <div>
-                <h2 class="display-6 mb-2">Nuestros Productos</h2>
+                <h2 class="display-6 mb-2">Productos</h2>
             </div>
         </div>
 
-        <div class="row g-4" id="products-container">
+
+        <div class="row g-4" id="products-container" {% if not request.GET.categoria %}
+            hx-get="{% url 'home' %}?categoria=estuches" hx-trigger="load delay:100ms" hx-push-url="true" hx-swap="none"
+            {% endif %}>
             {% include "store/partials/product_cards.html" with page_obj=page_obj %}
         </div>
 
-        <!-- Load More Button -->
-        {% if page_obj.has_next %}
-        <div class="text-center mt-5">
-            <button id="load-more-btn" class="btn btn-outline-primary px-5"
-                hx-get="{% url 'home' %}?page={{ page_obj.next_page_number }}" hx-target="#products-container"
-                hx-swap="beforeend" hx-indicator="#loading-spinner">
-                Cargar mas productos
-                <i class="bi bi-arrow-down ms-2"></i>
-            </button>
-            <div id="loading-spinner" class="htmx-request:inline-block hidden mt-3">
-                <div class="spinner-border spinner-border-sm text-primary" role="status">
-                    <span class="visually-hidden">Cargando...</span>
-                </div>
-            </div>
-        </div>
-        {% endif %}
     </div>
 </section>
 
