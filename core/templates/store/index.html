@@ -1,27 +1,127 @@
 {% extends 'base/base.html' %}
-
 {% load static %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'index.css' %}">
+<style>
+    /* Estilos mejorados para la barra de filtros */
+    .filter-card {
+        border-radius: 16px;
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+        transition: all 0.2s ease-in-out;
+    }
+
+    .filter-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #6c757d;
+        margin-bottom: 4px;
+        display: block;
+    }
+
+    .custom-select {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef !important;
+        border-radius: 10px !important;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #212529;
+        padding: 0.6rem 0.9rem;
+        transition: all 0.2s ease;
+    }
+
+    .custom-select:focus {
+        background-color: #ffffff;
+        border-color: #0d6efd !important;
+        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1) !important;
+    }
+
+    .filter-header-badge {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background-color: rgba(13, 110, 253, 0.1);
+        color: #0d6efd;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
 
 <!-- Catalog Section -->
-<section id="catalogo" class="py-5 bg-white">
+<section id="catalogo" class="py-4 bg-light">
     <div class="container">
 
-        <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3">
-            <div>
-                <h2 class="display-6 mb-2">Productos</h2>
-            </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h3 mb-0 fw-bold text-dark">Productos</h2>
         </div>
 
+        <!-- Tarjeta de Filtros Elegante -->
+        <div class="card filter-card p-3 p-md-4 mb-4">
+            <div class="d-flex align-items-center mb-3">
+                <div>
+                    <h4 class="fw-bold mb-0 text-dark" style="letter-spacing: -0.3px;">Buscar</h4>
+                </div>
+            </div>
 
-        <div class="row g-4" id="products-container" {% if not request.GET.categoria %}
-            hx-get="{% url 'home' %}?categoria=estuches" hx-trigger="load delay:100ms" hx-push-url="true" hx-swap="none"
-            {% endif %}>
+            <!-- Formulario Principal de HTMX -->
+            <form id="filtro-form" hx-get="{% url 'home' %}" hx-target="#products-container"
+                hx-trigger="change from:select" class="row g-2 g-md-3">
+
+                <!-- Mantenemos la categoría actual en las peticiones -->
+                <input type="hidden" name="categoria" value="{{ categoria_activa }}">
+
+                
+
+                <!-- Selector 2: Marca -->
+                <div class="col-6 col-md-4">
+                    <label class="filter-label">Marca</label>
+                    <select name="marca" class="form-select custom-select shadow-none"
+                        hx-get="{% url 'cargar_modelos_filtro' %}" hx-target="#select-modelo" hx-trigger="change"
+                        hx-include="#filtro-form">
+                        <option value="">Todas las marcas</option>
+                        {% for marca in marcas %}
+                        <option value="{{ marca.slug }}" {% if marca_activa and marca.slug == marca_activa %}selected{% endif %}>
+
+                            {{ marca.nombre }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Selector 3: Modelo Exacto (Contenedor objetivo de HTMX) -->
+                <div class="col-6 col-md-4">
+                    <label class="filter-label">Modelo</label>
+                    <select name="modelo" id="select-modelo" class="form-select custom-select shadow-none">
+                        {% include 'store/partials/modelos_options.html' %}
+                    </select>
+                </div>
+
+                <!-- Selector 1: Subcategoría -->
+                <div class="col-12 col-md-4">
+                    <label class="filter-label">Subcategoría</label>
+                    <select name="subcategoria" class="form-select custom-select shadow-none">
+                        <option value="">Todas las subcategorías</option>
+                        {% for sub in subcategorias %}
+                        <option value="{{ sub.slug }}" {% if subcategoria_activa and sub.slug == subcategoria_activa %}selected{% endif%}>
+                            {{ sub.nombre }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+            </form>
+        </div>
+
+        <!-- Contenedor de Productos (Carga dinámica vía HTMX) -->
+        <div class="row g-2 g-md-3" id="products-container">
             {% include "store/partials/product_cards.html" with page_obj=page_obj %}
         </div>
 

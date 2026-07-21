@@ -1,0 +1,6 @@
+<option value="">Todos los modelos</option>
+{% for modelo in modelos %}
+<option value="{{ modelo.slug }}" {% if modelo.slug == modelo_activo %}selected{% endif %}>
+    {{ modelo.nombre }}
+</option>
+{% endfor %}
